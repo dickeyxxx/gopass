@@ -9,12 +9,17 @@ import (
 // Array of bytes does not include end-of-line characters.
 func GetPasswd() []byte {
 	pass := make([]byte, 0)
+	counter := 0
 	for v := getch(); ; v = getch() {
+		counter = counter + 1
 		if v == 127 || v == 8 {
 			if len(pass) > 0 {
 				pass = pass[:len(pass)-1]
 			}
 		} else if v == 13 || v == 10 {
+			if counter == 1 && v == 10 {
+				continue
+			}
 			break
 		} else {
 			pass = append(pass, v)
@@ -31,7 +36,9 @@ func GetPasswdMasked() []byte {
 	mask := byte('*')
 
 	pass := make([]byte, 0)
+	counter := 0
 	for v := getch(); ; v = getch() {
+		counter = counter + 1
 		if v == 127 || v == 8 {
 			if len(pass) > 0 {
 				pass = pass[:len(pass)-1]
@@ -41,6 +48,9 @@ func GetPasswdMasked() []byte {
 				os.Stdout.Write([]byte("\b \b"))
 			}
 		} else if v == 13 || v == 10 {
+			if counter == 1 && v == 10 {
+				continue
+			}
 			break
 		} else {
 			secret = append(secret, mask)
